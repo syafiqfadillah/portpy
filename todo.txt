@@ -1,0 +1,13 @@
+- orc animations logic (done)
+- orc move logic (done)
+- animations logic (done)
+- class map (done)
+- fix class entity (done)
+- scenes code re-structure (done)
+- class animations (done)
+- game over (done)
+- collision logic (done)
+- spawn random health (done)
+- gameplay (done)
+- game sound
+- sfx 
