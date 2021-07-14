@@ -79,6 +79,12 @@ class Portal(GameObject):
 
         super().__init__(self.anim.animations_db[self.anim.state][0], position)
     
+    def entered(self, human):
+        if hf.get_distance(self.rect, human.rect) <= 20:
+            return True
+
+        return False
+
     def idle(self):
         if self.anim.end_frame():
             self.anim.set_state("idle")

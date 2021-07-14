@@ -133,7 +133,7 @@ class Human(Entity):
         return False
     
     def open_portal(self, limit):
-        if self.get_inventory() == limit:
+        if len(self.get_inventory()) == limit:
             return True
 
     def attack(self, orc):

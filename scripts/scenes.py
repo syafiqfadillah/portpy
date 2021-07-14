@@ -70,10 +70,10 @@ class GameOver:
 class Game:
     def __init__(self):
         self.level = 1
-        self.game = self._reload_level(self.level)
+        self.game = self._reload_level()
 
-    def _reload_level(self, level):
-        level_path = f"../level/level{level}.json"
+    def _reload_level(self):
+        level_path = f"../level/level{self.level}.json"
         load = hf.load_json(level_path)
         border = [-400, 400]
 
@@ -140,6 +140,10 @@ class Game:
                     self.game_objects.remove(p)
 
     def _logic(self):
+        if self.portal.entered(self.human):
+            self.level += 1
+            self._reload_level()
+
         if self.human.open_portal(self.collection.get_limit()):
             # so it will not appending multiple times
             if self.portal not in self.game_objects:
