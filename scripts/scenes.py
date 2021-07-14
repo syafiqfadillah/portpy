@@ -99,7 +99,7 @@ class Game:
         orcs_parse = load["orcs"]
         self.orcs = [entity.Orc(orcs_parse[orc]) for orc in orcs_parse.keys()]
         
-        self.collection = gui.Score(str(self.human.get_inventory()), str(len(puzzles_parse.keys())), 60, (10, 10))
+        self.collection = gui.Score(str(len(self.human.get_inventory())), len(puzzles_parse.keys()), 60, (10, 10))
         
         self.entitys = [self.human, *self.orcs]
         
