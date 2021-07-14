@@ -144,7 +144,7 @@ class Human(Entity):
             orc.health_bar.decrease(self.power)
     
     def get_inventory(self):
-        return len(self.inventory)
+        return self.inventory
 
     def get_position(self):
         return (self.rect.x, self.rect.y)

@@ -4,10 +4,8 @@ import pygame
 
 import entity
 import camera
-import hearth
 import gui
 import map
-import portal
 
 import helper_func as hf
 import game_object as go
@@ -90,10 +88,10 @@ class Game:
         self.puzzles = [go.Puzzles(puzzles_parse[puzzle]) for puzzle in puzzles_parse.keys()]
 
         hearths_parse = load["hearth"]
-        self.hearths = [hearth.Hearth(hearths_parse[h]) for h in hearths_parse.keys()]
+        self.hearths = [go.Hearth(hearths_parse[h]) for h in hearths_parse.keys()]
 
         portal_parse = load["portal"]
-        self.portal = portal.Portal(portal_parse)
+        self.portal = go.Portal(portal_parse)
 
         player_parse = load["player"]
         self.human = entity.Human(player_parse)
@@ -137,7 +135,7 @@ class Game:
         if key_pressed[pygame.K_x]:
             for p in self.puzzles[:]:
                 if self.human.pick_puzzle(p):
-                    self.collection.set_score(str(self.human.get_inventory()))
+                    self.collection.set_score(str(len(self.human.get_inventory())))
                     self.puzzles.remove(p)
                     self.game_objects.remove(p)
 
