@@ -1,5 +1,10 @@
-import scenes
+from scenes import Game
 
 
-game = scenes.Game()
-game.play()
+def main():
+	game = scenes.Game()
+	game.play()
+
+
+if __name__ == "__main__":
+	main()
