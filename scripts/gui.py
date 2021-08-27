@@ -15,7 +15,6 @@ class Text:
         screen.blit(self.font.render(self.text, True, Colors.WHITE), (self.rect.x, self.rect.y))
 
 
-# i dont know what im doing (but it works btw)
 class Score(Text):
     def __init__(self, collected, limit, size, position):
         self.limit = limit

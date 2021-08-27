@@ -1,4 +1,5 @@
 import sys
+import json
 
 import pygame
 
@@ -7,7 +8,6 @@ import camera
 import gui
 import map
 
-import helper_func as hf
 import game_object as go
 
 from colors import Colors
@@ -72,9 +72,15 @@ class Game:
         self.level = 1
         self.game = self._reload_level()
 
+    @staticmethod
+    def load_json(path):
+        with open(path, "r") as f:
+            file = json.load(f)
+            return file
+
     def _reload_level(self):
         level_path = f"../level/level{self.level}.json"
-        load = hf.load_json(level_path)
+        load = self.load_json(level_path)
         border = [-400, 400]
 
         map_images_path = "../assets/tiles"

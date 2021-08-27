@@ -2,7 +2,7 @@ from scenes import Game
 
 
 def main():
-	game = scenes.Game()
+	game = Game()
 	game.play()
 
 
