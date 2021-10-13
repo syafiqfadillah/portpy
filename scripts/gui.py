@@ -2,12 +2,12 @@ import random
 
 import pygame
 
-from colors import Colors
+from .colors import Colors
 
 
 class Text:
     def __init__(self, text, size, position):
-        self.font = pygame.font.Font("../assets/font/ARCADECLASSIC.TTF", size)
+        self.font = pygame.font.Font("assets/font/ARCADECLASSIC.TTF", size)
         self.text = text
         self.rect = pygame.Rect(position, (size, size))
 

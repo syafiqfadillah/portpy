@@ -3,14 +3,13 @@ import json
 
 import pygame
 
-import entity
-import camera
-import gui
-import map
+from . import entity
+from . import camera
+from . import gui
+from . import map
 
-import game_object as go
-
-from colors import Colors
+from . import game_object as go
+from .colors import Colors
 
 
 pygame.init()
@@ -79,11 +78,11 @@ class Game:
             return file
 
     def _reload_level(self):
-        level_path = f"../level/level{self.level}.json"
+        level_path = f"level/level{self.level}.json"
         load = self.load_json(level_path)
         border = [-400, 400]
 
-        map_images_path = "../assets/tiles"
+        map_images_path = "assets/tiles"
         map_parse = load["tilemap"]
         collide_parse = load["collide"]
         self.map = map.Map(map_parse, map_images_path, collide_parse, [border[0], -border[1]])

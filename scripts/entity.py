@@ -1,9 +1,8 @@
-import animations
+from . import animations
 
-import health_bar as hb
-import helper_func as hf
-
-from game_object import GameObject
+from . import health_bar as hb
+from . import helper_func as hf
+from .game_object import GameObject
 
 
 class Entity(GameObject):
@@ -100,13 +99,13 @@ class Entity(GameObject):
 class Human(Entity):
     def __init__(self, position):
         super().__init__(100, 2, position, 2,
-                        "../assets/human/idle/left",
-                        "../assets/human/idle/right",
-                        "../assets/human/walk/left",
-                        "../assets/human/walk/right",
-                        "../assets/human/attack/left",
-                        "../assets/human/attack/right",
-                        "../assets/human/die")
+                        "assets/human/idle/left",
+                        "assets/human/idle/right",
+                        "assets/human/walk/left",
+                        "assets/human/walk/right",
+                        "assets/human/attack/left",
+                        "assets/human/attack/right",
+                        "assets/human/die")
         self.inventory = []
     
     def pick_hearth(self, hearth):
@@ -153,13 +152,13 @@ class Human(Entity):
 class Orc(Entity):
     def __init__(self, position):
         super().__init__(50, 1, position, 1,
-                        "../assets/orc/idle/left",
-                        "../assets/orc/idle/right",
-                        "../assets/orc/walk/left",
-                        "../assets/orc/walk/right",
-                        "../assets/orc/attack/left",
-                        "../assets/orc/attack/right",
-                        "../assets/orc/die")
+                        "assets/orc/idle/left",
+                        "assets/orc/idle/right",
+                        "assets/orc/walk/left",
+                        "assets/orc/walk/right",
+                        "assets/orc/attack/left",
+                        "assets/orc/attack/right",
+                        "assets/orc/die")
     
     def move(self, human):
         self.movement = [0, 0]

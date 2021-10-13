@@ -1,6 +1,6 @@
 import pygame
 
-import helper_func as hf
+from . import helper_func as hf
 
 
 # map/tilemap is Game Object?

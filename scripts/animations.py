@@ -2,7 +2,7 @@ import os
 
 import pygame
 
-import helper_func as hf
+from . import helper_func as hf
 
 
 class Animations:

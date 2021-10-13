@@ -1,4 +1,4 @@
-from scenes import Game
+from scripts.scenes import Game
 
 
 def main():

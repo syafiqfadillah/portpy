@@ -1,8 +1,7 @@
 import random
 
-import animations as a
-
-import helper_func  as hf
+from . import animations as a
+from . import helper_func  as hf
 
 
 class GameObject:
@@ -23,8 +22,8 @@ class GameObject:
 class Puzzles(GameObject):
     def __init__(self, position):
         self.anim = a.Animations((32, 32))
-        self.anim.load_animations("lock", "../assets/puzzles/lock", 8)
-        self.anim.load_animations("unlock", "../assets/puzzles/unlock", 30, loop=False)
+        self.anim.load_animations("lock", "assets/puzzles/lock", 8)
+        self.anim.load_animations("unlock", "assets/puzzles/unlock", 30, loop=False)
 
         self.anim.set_state("lock")
 
@@ -44,7 +43,7 @@ class Puzzles(GameObject):
 
 class Hearth(GameObject):
     def __init__(self, position):
-        path = "../assets/hearth/hearth_0.png"
+        path = "assets/hearth/hearth_0.png"
         self.image = hf.load_image(path, (16, 16))
         self.health = 10
         self.vel = -5
@@ -70,9 +69,9 @@ class Hearth(GameObject):
 class Portal(GameObject):
     def __init__(self, position):
         self.anim = a.Animations((100, 100))
-        open_path = "../assets/portal/open"
+        open_path = "assets/portal/open"
         self.anim.load_animations("open", open_path, 8, loop=False)
-        idle_path = "../assets/portal/idle"
+        idle_path = "assets/portal/idle"
         self.anim.load_animations("idle", idle_path, 8, loop=True)
         
         self.anim.set_state("open")
