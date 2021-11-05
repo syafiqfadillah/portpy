@@ -85,10 +85,10 @@ class Game:
 
         self.camera = camera.Camera(border)
 
-        puzzles_parse = load["puzzles"]
+        puzzles_parse = hf.check_value_type(load["puzzles"])
         self.puzzles = [go.Puzzles(puzzles_parse[puzzle]) for puzzle in puzzles_parse.keys()]
 
-        hearths_parse = load["hearth"]
+        hearths_parse = hf.check_value_type(load["hearth"])
         self.hearths = [go.Hearth(hearths_parse[h]) for h in hearths_parse.keys()]
 
         portal_parse = load["portal"]
@@ -97,14 +97,14 @@ class Game:
         player_parse = load["player"]
         self.human = entity.Human(player_parse)
 
-        orcs_parse = load["orcs"]
+        orcs_parse = hf.check_value_type(load["orcs"])
         self.orcs = [entity.Orc(orcs_parse[orc]) for orc in orcs_parse.keys()]
         
         self.collection = gui.Score(str(len(self.human.get_inventory())), len(puzzles_parse.keys()), 60, (10, 10))
         
         self.entitys = [self.human, *self.orcs]
         
-        self.game_objects = [*self.hearths, *self.entitys, *self.puzzles]
+        self.game_objects = [self.map, *self.hearths, *self.entitys, *self.puzzles]
 
     def _input_handle(self):
         for event in pygame.event.get():
@@ -155,7 +155,7 @@ class Game:
             orc.attack(self.human)
 
         for object in self.entitys[:]:
-            object.collision(self.map.rects)
+            object.collision(self.map.get_rects())
             if object.death():
                 self.entitys.remove(object)
                 self.game_objects.remove(object)
@@ -169,9 +169,6 @@ class Game:
 
     def _update(self):
         self.camera.focus(self.human.get_position())
-
-        # to get camera scrolling effect
-        self.map.set_scroll(self.camera.get_scroll())
 
         for game_object in self.game_objects:
             game_object.set_scroll(self.camera.get_scroll())
