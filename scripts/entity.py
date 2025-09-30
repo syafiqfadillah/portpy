@@ -86,14 +86,6 @@ class Entity(GameObject):
 
         return False
     
-    def knockback(self, source, strength):
-        dx = self.rect.x - source.rect.x
-        dy = self.rect.y - source.rect.y
-        distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)
-
-        self.rect.x += int(strength * dx / distance)
-        self.rect.y += int(strength * dy / distance)
-    
     def update(self):
         self.position = (self.rect.x - self.scroll[0], self.rect.y - self.scroll[1])
 
@@ -175,13 +167,17 @@ class Orc(Entity):
                         "assets/orc/attack/left",
                         "assets/orc/attack/right",
                         "assets/orc/die")
+        
+        self.cooldown = 100
+        self.cooldown_timer = 0
+        self.is_knockback = False
     
     def move(self, human):
         self.movement = [0, 0]
 
         limit = 130
 
-        if hf.get_distance(self.rect, human.rect) < limit :
+        if hf.get_distance(self.rect, human.rect) < limit and not self.is_cooldown():
             if self.rect.y > human.rect.y:
                 self.anim.walk_change_state()
                 self.movement[1] = -self.speed
@@ -200,10 +196,38 @@ class Orc(Entity):
         self.rect.x += self.movement[0]
         self.rect.y += self.movement[1]
 
+    def knockback(self, source, strength):
+        dx = self.rect.x - source.rect.x
+        dy = self.rect.y - source.rect.y
+        distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)
+
+        self.rect.x += int(strength * dx / distance)
+        self.rect.y += int(strength * dy / distance)
+
+        self.cooldown_timer = self.cooldown
+        self.is_knockback = True
+
+    def is_cooldown(self):
+        if (self.is_knockback and self.cooldown > 0):
+            return True 
+        
+        return False
+    
+    def update_cooldown(self):
+        if (self.cooldown_timer > 0):
+            self.cooldown_timer -= 1
+        else:
+            self.is_knockback = False
+
     def spawn_area(self):
         return self.rect.x == 50
 
     def lost_area(self):
         return (self.rect.x <= -50 or self.rect.x > 1000)
+    
+    def update(self):
+        self.update_cooldown()
+
+        super().update()
 
 
