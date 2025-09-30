@@ -107,17 +107,23 @@ class Human(Entity):
                         "assets/human/attack/right",
                         "assets/human/die")
         self.inventory = []
+
+    # (1) refactor
+    def increase_health(self, hearth):
+        # so that the addition of health does not exceed the bar limit
+        if self.health_bar.get_health() >= (self.health_bar.get_bar_width() - hearth.health):
+            health = self.health_bar.red_bar.width - self.health_bar.get_health()
+        else:
+            health = hearth.health
+
+        self.health_bar.increase(health)
     
     def pick_hearth(self, hearth):
         limit = 50
         if hf.get_distance(self.rect, hearth.rect) <= limit:
             if self.health_bar.get_health() != self.health_bar.get_bar_width():
-                # so that the addition of health does not exceed the bar limit
-                if self.health_bar.get_health() >= (self.health_bar.get_bar_width() - hearth.health):
-                    health = self.health_bar.red_bar.width - self.health_bar.get_health()
-                else:
-                    health = hearth.health
-                self.health_bar.increase(health)
+                self.increase_health(hearth)
+                
                 return True
             else:
                 return False
