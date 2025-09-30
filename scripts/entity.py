@@ -7,7 +7,7 @@ from .game_object import GameObject
 
 class Entity(GameObject):
     def __init__(self,
-                 health, speed, position, power,
+                 health, speed, position, power, strength,
                  idle_left, idle_right,
                  walk_left, walk_right,
                  attack_left, attack_right,
@@ -29,6 +29,7 @@ class Entity(GameObject):
 
         self.speed = speed
         self.power = power
+        self.strength = strength
         self.health_bar = hb.HealthBar(health, (self.rect.x, self.rect.y))
     
     def collision(self, rects):
@@ -85,6 +86,14 @@ class Entity(GameObject):
 
         return False
     
+    def knockback(self, source, strength):
+        dx = self.rect.x - source.rect.x
+        dy = self.rect.y - source.rect.y
+        distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)
+
+        self.rect.x += int(strength * dx / distance)
+        self.rect.y += int(strength * dy / distance)
+    
     def update(self):
         self.position = (self.rect.x - self.scroll[0], self.rect.y - self.scroll[1])
 
@@ -98,7 +107,7 @@ class Entity(GameObject):
 
 class Human(Entity):
     def __init__(self, position):
-        super().__init__(100, 2, position, 2,
+        super().__init__(100, 2, position, 2, 15,
                         "assets/human/idle/left",
                         "assets/human/idle/right",
                         "assets/human/walk/left",
@@ -147,6 +156,7 @@ class Human(Entity):
 
         if hf.get_distance(self.rect, orc.rect) <= limit:
             orc.health_bar.decrease(self.power)
+            orc.knockback(self, self.strength)
     
     def get_inventory(self):
         return self.inventory
@@ -157,7 +167,7 @@ class Human(Entity):
     
 class Orc(Entity):
     def __init__(self, position):
-        super().__init__(50, 1, position, 1,
+        super().__init__(50, 1, position, 1, 7,
                         "assets/orc/idle/left",
                         "assets/orc/idle/right",
                         "assets/orc/walk/left",
@@ -171,7 +181,7 @@ class Orc(Entity):
 
         limit = 130
 
-        if hf.get_distance(self.rect, human.rect) < limit:
+        if hf.get_distance(self.rect, human.rect) < limit :
             if self.rect.y > human.rect.y:
                 self.anim.walk_change_state()
                 self.movement[1] = -self.speed
