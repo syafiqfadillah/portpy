@@ -144,11 +144,13 @@ class Game:
         if self.portal.entered(self.human):
             self.level += 1
             self._reload_level()
+            self.portal.is_open = False
 
         if self.human.open_portal(self.collection.get_limit()):
             # so it will not appending multiple times
             if self.portal not in self.game_objects:
                 self.game_objects.append(self.portal)
+                self.portal.is_open = True
 
         for orc in self.orcs[:]:
             orc.move(self.human)

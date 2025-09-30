@@ -76,10 +76,14 @@ class Portal(GameObject):
         
         self.anim.set_state("open")
 
+        self.is_open = False
+
         super().__init__(self.anim.animations_db[self.anim.state][0], position)
     
     def entered(self, human):
-        if hf.get_distance(self.rect, human.rect) <= 20:
+        limit_distance = 20
+
+        if (hf.get_distance(self.rect, human.rect) <= limit_distance) and self.is_open:
             return True
 
         return False
