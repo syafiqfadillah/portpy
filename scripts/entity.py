@@ -5,6 +5,14 @@ from . import helper_func as hf
 from .game_object import GameObject
 
 
+class EntityState:
+    IDLE = "IDLE"
+    WALK = "WALK"
+    ATTACK = "ATTACK"
+    KNOCKBACK = "KNOCKBACK"
+    COOLDOWN = "COOLDOWN"
+    DIE = "DIE"
+
 class Entity(GameObject):
     def __init__(self,
                  health, speed, position, power, strength,
@@ -30,6 +38,7 @@ class Entity(GameObject):
         self.speed = speed
         self.power = power
         self.strength = strength
+        self.state = EntityState.IDLE
         self.health_bar = hb.HealthBar(health, (self.rect.x, self.rect.y))
     
     def collision(self, rects):
@@ -47,29 +56,44 @@ class Entity(GameObject):
     def idle(self):
         self.anim.idle_change_state()
 
+        self.set_state(EntityState.IDLE)
+
+    def is_currently(self, state):
+        return self.state == state
+
+    def set_state(self, state):
+        if (self.state != state):
+            self.state = state
+
     def move(self, up=False, down=False, right=False, left=False):
         self.movement = [0, 0]
 
         if up:
             self.anim.walk_change_state()
+            self.set_state(EntityState.WALK)
             self.movement[1] = -self.speed
         elif down:
             self.anim.walk_change_state()
+            self.set_state(EntityState.WALK)
             self.movement[1] = self.speed
         elif right:
             self.anim.set_state("walk right")
+            self.set_state(EntityState.WALK)
             self.movement[0] = self.speed
         elif left:
             self.anim.set_state("walk left")
+            self.set_state(EntityState.WALK)
             self.movement[0] = -self.speed
         
         self.rect.x += self.movement[0]
         self.rect.y += self.movement[1]
 
     def attack(self, other):
-        limit = 10
+        limit = 20
+
         if hf.get_distance(self.rect, other.rect) <= limit:
             self.anim.attack_change_state()
+            self.set_state(EntityState.ATTACK)
             self.speed = 0
 
             other.health_bar.decrease(self.power)
@@ -79,6 +103,7 @@ class Entity(GameObject):
     def death(self):
         if self.health_bar.get_health() <= 0:
             self.anim.die_change_state()
+            self.set_state(EntityState.DIE)
             self.speed = 0
 
             if self.anim.end_frame():
@@ -143,8 +168,9 @@ class Human(Entity):
             return True
 
     def attack(self, orc):
-        limit = 15
+        limit = 30
         self.anim.attack_change_state()
+        self.set_state(EntityState.ATTACK)
 
         if hf.get_distance(self.rect, orc.rect) <= limit:
             orc.health_bar.decrease(self.power)
@@ -180,15 +206,19 @@ class Orc(Entity):
         if hf.get_distance(self.rect, human.rect) < limit and not self.is_cooldown():
             if self.rect.y > human.rect.y:
                 self.anim.walk_change_state()
+                self.set_state(EntityState.WALK)
                 self.movement[1] = -self.speed
             if self.rect.y < human.rect.y:
                 self.anim.walk_change_state()
+                self.set_state(EntityState.WALK)
                 self.movement[1] = self.speed
             if self.rect.x > human.rect.x:
                 self.anim.set_state("walk left")
+                self.set_state(EntityState.WALK)
                 self.movement[0] = -self.speed
             if self.rect.x < human.rect.x:
                 self.anim.set_state("walk right")
+                self.set_state(EntityState.WALK)
                 self.movement[0] = self.speed
         else:
             self.idle()
@@ -205,10 +235,10 @@ class Orc(Entity):
         self.rect.y += int(strength * dy / distance)
 
         self.cooldown_timer = self.cooldown
-        self.is_knockback = True
+        self.set_state(EntityState.KNOCKBACK)
 
     def is_cooldown(self):
-        if (self.is_knockback and self.cooldown > 0):
+        if ((self.is_currently(EntityState.KNOCKBACK) or self.is_currently(EntityState.COOLDOWN)) and self.cooldown_timer > 0):
             return True 
         
         return False
@@ -216,8 +246,11 @@ class Orc(Entity):
     def update_cooldown(self):
         if (self.cooldown_timer > 0):
             self.cooldown_timer -= 1
+
+            self.set_state(EntityState.COOLDOWN)
         else:
-            self.is_knockback = False
+            if (self.is_currently(EntityState.KNOCKBACK)):
+                self.set_state(EntityState.IDLE)
 
     def spawn_area(self):
         return self.rect.x == 50
