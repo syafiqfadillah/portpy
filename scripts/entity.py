@@ -65,40 +65,9 @@ class Entity(GameObject):
         if (self.state != state):
             self.state = state
 
-    def move(self, up=False, down=False, right=False, left=False):
-        self.movement = [0, 0]
+    # TODO: Create Move Method
 
-        if up:
-            self.anim.walk_change_state()
-            self.set_state(EntityState.WALK)
-            self.movement[1] = -self.speed
-        elif down:
-            self.anim.walk_change_state()
-            self.set_state(EntityState.WALK)
-            self.movement[1] = self.speed
-        elif right:
-            self.anim.set_state("walk right")
-            self.set_state(EntityState.WALK)
-            self.movement[0] = self.speed
-        elif left:
-            self.anim.set_state("walk left")
-            self.set_state(EntityState.WALK)
-            self.movement[0] = -self.speed
-        
-        self.rect.x += self.movement[0]
-        self.rect.y += self.movement[1]
-
-    def attack(self, other):
-        limit = 20
-
-        if hf.get_distance(self.rect, other.rect) <= limit:
-            self.anim.attack_change_state()
-            self.set_state(EntityState.ATTACK)
-            self.speed = 0
-
-            other.health_bar.decrease(self.power)
-        else:
-            self.speed = 1
+    # TODO: Create Attack Method
                 
     def death(self):
         if self.health_bar.get_health() <= 0:
@@ -146,6 +115,7 @@ class Human(Entity):
     
     def pick_hearth(self, hearth):
         limit = 50
+        
         if hf.get_distance(self.rect, hearth.rect) <= limit:
             if self.health_bar.get_health() != self.health_bar.get_bar_width():
                 self.increase_health(hearth)
@@ -156,6 +126,7 @@ class Human(Entity):
     
     def pick_puzzle(self, puzzle):
         limit = 13
+
         if hf.get_distance(self.rect, puzzle.rect) <= limit:
             if puzzle.collected():
                 self.inventory.append(puzzle)
@@ -166,6 +137,29 @@ class Human(Entity):
     def open_portal(self, limit):
         if len(self.get_inventory()) == limit:
             return True
+        
+    def move(self, up=False, down=False, right=False, left=False):
+        self.movement = [0, 0]
+
+        if up:
+            self.anim.walk_change_state()
+            self.set_state(EntityState.WALK)
+            self.movement[1] = -self.speed
+        elif down:
+            self.anim.walk_change_state()
+            self.set_state(EntityState.WALK)
+            self.movement[1] = self.speed
+        elif right:
+            self.anim.set_state("walk right")
+            self.set_state(EntityState.WALK)
+            self.movement[0] = self.speed
+        elif left:
+            self.anim.set_state("walk left")
+            self.set_state(EntityState.WALK)
+            self.movement[0] = -self.speed
+        
+        self.rect.x += self.movement[0]
+        self.rect.y += self.movement[1]
 
     def attack(self, orc):
         limit = 30
@@ -225,6 +219,22 @@ class Orc(Entity):
         
         self.rect.x += self.movement[0]
         self.rect.y += self.movement[1]
+    
+    def attack(self, player):
+        limit = 25
+
+        if (hf.get_distance(self.rect, player.rect) <= limit) and self.is_currently(EntityState.WALK):
+            if (not player.is_currently(EntityState.DIE)):
+                self.anim.attack_change_state()
+                self.set_state(EntityState.ATTACK)
+
+                player.health_bar.decrease(self.power)
+            else:
+                self.anim.idle_change_state()
+            
+            self.speed = 0
+        else:
+            self.speed = 1
 
     def knockback(self, source, strength):
         dx = self.rect.x - source.rect.x
